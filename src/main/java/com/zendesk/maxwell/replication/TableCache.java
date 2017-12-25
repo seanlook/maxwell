@@ -14,9 +14,13 @@ public class TableCache {
 
 	public void processEvent(Schema schema, MaxwellFilter filter, Long tableId, String dbName, String tblName) {
 		if ( !tableMapCache.containsKey(tableId) ) {
-			if ( filter != null && filter.isTableBlacklisted(dbName, tblName) ) {
-				blacklistedTableCache.put(tableId, tblName);
-				return;
+			if ( filter != null ) {
+				if ( filter.isTableBlacklisted(dbName, tblName) ) {
+					blacklistedTableCache.put(tableId, tblName);
+					return;
+				}
+				else if ( !filter.matches(dbName, tblName) ) 
+					return;
 			}
 
 			Database db = schema.findDatabase(dbName);
